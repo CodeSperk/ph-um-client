@@ -1,44 +1,93 @@
-import { createElement } from 'react';
-import { Layout, Menu } from 'antd';
-import { UploadOutlined, UserOutlined, VideoCameraOutlined } from '@ant-design/icons';
+import { useState } from 'react';
+import { Layout, Menu, Button } from 'antd';
+import { MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons';
+import {  Outlet } from 'react-router-dom';
+import { adminSidebarItems } from '../../routes/admin.routes';
 
 const { Header, Content, Footer, Sider } = Layout;
 
-const items = [UserOutlined, VideoCameraOutlined, UploadOutlined, UserOutlined].map(
-  (icon, index) => ({
-    key: String(index + 1),
-    icon: createElement(icon),
-    label: `nav ${index + 1}`,
-  }),
-);
+// const items : MenuProps["items"] = [
+//   {
+//     key: "Dashboard",
+//     label: <NavLink to="/admin">Dashboard</NavLink>,
+//   },
+//   {
+//     key: "User-Management",
+//     label: "User Management",
+//     children: [
+//      {
+//         key: "Create Admin",
+//         label:  <NavLink to="/admin/create-admin">Create Admin</NavLink>
+//       },
+//      {
+//         key: "Create Faculty",
+//         label:  <NavLink to="/admin/create-faculty">Create Faculty</NavLink>
+//       },
+//       {
+//         key:"Create Student",
+//         label: <NavLink to="/admin/create-student">Create Students</NavLink>
+//       }
+//     ]
+//   },
+//   {
+//     key: "4",
+//     label: "Statistics",
+//   }  
+// ];
 
 const MainLayout = () => {
+  const [collapsed, setCollapsed] = useState(false);
 
   return (
-    <Layout>
+    <Layout style={{ height: '100vh' }}>
       <Sider
         breakpoint="lg"
         collapsedWidth="0"
-        onBreakpoint={(broken) => {
-          console.log(broken);
-        }}
-        onCollapse={(collapsed, type) => {
-          console.log(collapsed, type);
-        }}
+        collapsed={collapsed}
+        onCollapse={(value) => setCollapsed(value)}
+        style={{ position: 'fixed', height: '100vh' }}
       >
-        <div className="demo-logo-vertical" />
-        <Menu theme="dark" mode="inline" defaultSelectedKeys={['4']} items={items} />
+        {/* Logo */}
+        <div style={{height: "64px", display: "flex", justifyContent: "center", alignItems: "center"}}>
+          <h1 style={{color:"white", padding: 8, textAlign: "center",}}>PH University</h1>
+        </div>
+        <Menu theme="dark" mode="inline" defaultSelectedKeys={['Dashboard']} items={adminSidebarItems} />
       </Sider>
-      <Layout>
-        <Header style={{ padding: 0}} />
-        <Content style={{ margin: '24px 16px 0' }}>
+      <Layout style={{ marginLeft: collapsed ? 0 : 200, transition: 'margin-left 0.3s' }}>
+        <Header
+          style={{
+            padding: '0',
+            background: '#fff',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}
+        >
+          <Button
+            type="text"
+            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+            onClick={() => setCollapsed(!collapsed)}
+            style={{
+              fontSize: '18px',
+              padding: "20px",
+              background: "#001925",
+              color: "#fff",
+              marginTop: "105px",
+              borderRadius: 0,
+              borderTopRightRadius: "8px",
+              borderBottomRightRadius: "8px",
+            }}
+          />
+        </Header>
+        <Content style={{ margin: '24px 16px 0', overflow: 'initial' }}>
           <div
             style={{
               padding: 24,
-              minHeight: 360
+              background: '#fff',
+              minHeight: 360,
             }}
           >
-            content
+            <Outlet/>
           </div>
         </Content>
         <Footer style={{ textAlign: 'center' }}>
